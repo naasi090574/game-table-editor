@@ -223,7 +223,6 @@
       background: transparent;
       color: #ffffff;
       font-weight: 900;
-      cursor: pointer;
     }
 
     .preview-tab.active {
@@ -309,10 +308,6 @@
       feedbackUrl: "",
       endButtonText: "ИГРАТЬ СНОВА",
       showEndButton: true,
-
-      showNextButton: false,
-      nextButtonText: "ДАЛЬШЕ",
-      nextButtonUrl: "",
 
       transparentBg: true,
       bgColor: "#000000",
@@ -470,22 +465,6 @@
                 <input id="showEndButton" type="checkbox" checked>
                 Показывать кнопку «Играть снова»
               </label>
-
-              <br>
-
-              <label class="checkbox-line">
-                <input id="showNextButton" type="checkbox">
-                Показывать кнопку «Дальше»
-              </label>
-
-              <label>Текст кнопки «Дальше»:</label>
-              <input id="nextButtonText" value="${defaultConfig.nextButtonText}">
-
-              <br><br>
-
-              <label>Ссылка для кнопки «Дальше»:</label>
-              <input id="nextButtonUrl" placeholder="https://...">
-              <div class="hint">Если ссылка пустая, кнопка «Дальше» не появится в готовой игре.</div>
             </div>
 
             <div class="section">
@@ -529,8 +508,7 @@
 
           <main class="preview-panel">
             <div class="preview-tabs">
-              <button class="preview-tab active" type="button">ПРЕДПРОСМОТР ИГРЫ</button>
-              <button class="preview-tab" type="button" onclick="copyShortCode()">СКОПИРОВАТЬ КОД</button>
+              <div class="preview-tab active">ПРЕДПРОСМОТР ИГРЫ</div>
             </div>
 
             <div id="preview"></div>
@@ -564,9 +542,6 @@
         "feedbackUrl",
         "endButtonText",
         "showEndButton",
-        "showNextButton",
-        "nextButtonText",
-        "nextButtonUrl",
         "transparentBg",
         "bgColor",
         "bgUrl",
@@ -617,10 +592,6 @@
         feedbackUrl: document.getElementById("feedbackUrl").value.trim(),
         endButtonText: document.getElementById("endButtonText").value.trim() || "ИГРАТЬ СНОВА",
         showEndButton: document.getElementById("showEndButton").checked,
-
-        showNextButton: document.getElementById("showNextButton").checked,
-        nextButtonText: document.getElementById("nextButtonText").value.trim() || "ДАЛЬШЕ",
-        nextButtonUrl: document.getElementById("nextButtonUrl").value.trim(),
 
         transparentBg: document.getElementById("transparentBg").checked,
         bgColor: document.getElementById("bgColor").value,
@@ -1288,6 +1259,14 @@
             margin: 10px auto;
           }
 
+          #${targetId} .win-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 16px;
+          }
+
           @media (max-width: 820px) {
             #${targetId} .play-layout {
               grid-template-columns: 1fr;
@@ -1390,7 +1369,6 @@
 
                 <div class="win-buttons">
                   ${config.showEndButton ? `<button class="game-btn restart-btn" type="button">${safe(config.endButtonText || "ИГРАТЬ СНОВА")}</button>` : ""}
-                  ${(config.showNextButton && config.nextButtonUrl) ? `<button class="game-btn next-btn" type="button">${safe(config.nextButtonText || "ДАЛЬШЕ")}</button>` : ""}
                 </div>
               </div>
             </div>
@@ -1402,7 +1380,6 @@
       const playScreen = root.querySelector(".play-screen");
       const startBtn = root.querySelector(".start-btn");
       const restartBtn = root.querySelector(".restart-btn");
-      const nextBtn = root.querySelector(".next-btn");
       const soundBtn = root.querySelector(".sound-btn");
       const foundCount = root.querySelector(".found-count");
       const totalCount = root.querySelector(".total-count");
@@ -1475,12 +1452,6 @@
 
       if (restartBtn) {
         restartBtn.addEventListener("click", restartGame);
-      }
-
-      if (nextBtn) {
-        nextBtn.addEventListener("click", function() {
-          window.open(config.nextButtonUrl, "_top");
-        });
       }
 
       if (soundBtn) {
