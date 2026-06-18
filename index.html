@@ -296,15 +296,24 @@
       frameNeon: true,
       soundButton: true,
       showDarkCard: true,
+
+      objectPlacement: "manual",
+
       topItems: ["руль", "рогатка", "рак", "ракета"],
       leftItems: ["ручка", "ракушка", "робот", "ромашка"],
       objectUrl: "",
       objectCount: 5,
       objectCoords: ["1,2", "2,1", "2,3", "3,4", "4,2"],
+
       winText: "Победа! Все объекты найдены!",
       feedbackUrl: "",
       endButtonText: "ИГРАТЬ СНОВА",
       showEndButton: true,
+
+      showNextButton: false,
+      nextButtonText: "ДАЛЬШЕ",
+      nextButtonUrl: "",
+
       transparentBg: true,
       bgColor: "#000000",
       bgUrl: "",
@@ -419,19 +428,28 @@
             </div>
 
             <div class="section">
+              <label>Расположение спрятанных объектов:</label>
+              <select id="objectPlacement">
+                <option value="manual">Вручную по координатам</option>
+                <option value="random">Случайно</option>
+              </select>
+
+              <br><br>
+
               <label>URL картинки спрятанного объекта:</label>
               <input id="objectUrl" placeholder="Можно оставить пустым — будет звёздочка">
 
               <br><br>
 
-              <label>Количество объектов, если координаты пустые:</label>
+              <label>Количество объектов:</label>
               <input id="objectCount" type="number" min="1" value="${defaultConfig.objectCount}">
+              <div class="hint">Если выбран режим «Случайно», игра сама спрячет это количество предметов.</div>
 
-              <br><br>
+              <br>
 
               <label>Координаты клеток с объектами<br>каждая с новой строки:</label>
               <textarea id="objectCoords">${defaultConfig.objectCoords.join("\n")}</textarea>
-              <div class="hint">Первое число — строка, второе — столбец. Например: 2,3</div>
+              <div class="hint">Для ручного режима. Первое число — строка, второе — столбец. Например: 2,3</div>
             </div>
 
             <div class="section">
@@ -445,13 +463,29 @@
 
               <br><br>
 
-              <label>Текст кнопки в конце:</label>
+              <label>Текст кнопки «Играть снова»:</label>
               <input id="endButtonText" value="${defaultConfig.endButtonText}">
 
               <label class="checkbox-line">
                 <input id="showEndButton" type="checkbox" checked>
-                Показывать кнопку в конце
+                Показывать кнопку «Играть снова»
               </label>
+
+              <br>
+
+              <label class="checkbox-line">
+                <input id="showNextButton" type="checkbox">
+                Показывать кнопку «Дальше»
+              </label>
+
+              <label>Текст кнопки «Дальше»:</label>
+              <input id="nextButtonText" value="${defaultConfig.nextButtonText}">
+
+              <br><br>
+
+              <label>Ссылка для кнопки «Дальше»:</label>
+              <input id="nextButtonUrl" placeholder="https://...">
+              <div class="hint">Если ссылка пустая, кнопка «Дальше» не появится в готовой игре.</div>
             </div>
 
             <div class="section">
@@ -506,6 +540,7 @@
 
       document.getElementById("gameMode").value = defaultConfig.gameMode;
       document.getElementById("fontFamily").value = defaultConfig.fontFamily;
+      document.getElementById("objectPlacement").value = defaultConfig.objectPlacement;
 
       const fieldIds = [
         "gameTitle",
@@ -521,6 +556,7 @@
         "showDarkCard",
         "topItems",
         "leftItems",
+        "objectPlacement",
         "objectUrl",
         "objectCount",
         "objectCoords",
@@ -528,6 +564,9 @@
         "feedbackUrl",
         "endButtonText",
         "showEndButton",
+        "showNextButton",
+        "nextButtonText",
+        "nextButtonUrl",
         "transparentBg",
         "bgColor",
         "bgUrl",
@@ -565,15 +604,24 @@
         frameNeon: document.getElementById("frameNeon").checked,
         soundButton: document.getElementById("soundButton").checked,
         showDarkCard: document.getElementById("showDarkCard").checked,
+
         topItems: linesFromText(document.getElementById("topItems").value),
         leftItems: linesFromText(document.getElementById("leftItems").value),
+
+        objectPlacement: document.getElementById("objectPlacement").value,
         objectUrl: document.getElementById("objectUrl").value.trim(),
         objectCount: Number(document.getElementById("objectCount").value) || 1,
         objectCoords: linesFromText(document.getElementById("objectCoords").value),
+
         winText: document.getElementById("winText").value.trim() || "Победа!",
         feedbackUrl: document.getElementById("feedbackUrl").value.trim(),
         endButtonText: document.getElementById("endButtonText").value.trim() || "ИГРАТЬ СНОВА",
         showEndButton: document.getElementById("showEndButton").checked,
+
+        showNextButton: document.getElementById("showNextButton").checked,
+        nextButtonText: document.getElementById("nextButtonText").value.trim() || "ДАЛЬШЕ",
+        nextButtonUrl: document.getElementById("nextButtonUrl").value.trim(),
+
         transparentBg: document.getElementById("transparentBg").checked,
         bgColor: document.getElementById("bgColor").value,
         bgUrl: document.getElementById("bgUrl").value.trim(),
@@ -669,12 +717,13 @@
 
       let soundOn = true;
       let found = 0;
-      const foundCells = new Set();
+      let foundCells = new Set();
+      let hiddenCells = parseHiddenCells();
 
       function parseHiddenCells() {
         const result = new Set();
 
-        if (Array.isArray(config.objectCoords)) {
+        if (config.objectPlacement === "manual" && Array.isArray(config.objectCoords)) {
           config.objectCoords.forEach(function(line) {
             const parts = String(line).split(",");
             const row = Number(parts[0]);
@@ -686,7 +735,7 @@
           });
         }
 
-        if (result.size === 0) {
+        if (config.objectPlacement === "random" || result.size === 0) {
           const allCells = [];
 
           for (let r = 0; r < rows; r++) {
@@ -711,8 +760,9 @@
         return result;
       }
 
-      const hiddenCells = parseHiddenCells();
-      const totalObjects = hiddenCells.size;
+      function getTotalObjects() {
+        return hiddenCells.size;
+      }
 
       function makeItem(value, className, index) {
         const content = isUrl(value)
@@ -880,14 +930,16 @@
           }
 
           #${targetId} .game-btn {
-            display: block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto;
             border: none;
             border-radius: 17px;
-            padding: 13px 42px;
+            padding: 13px 34px;
             cursor: pointer;
             color: #03111d;
-            font-size: clamp(20px, 3.5vmin, 27px);
+            font-size: clamp(18px, 3.2vmin, 26px);
             font-weight: 900;
             background: linear-gradient(145deg, ${theme}, #02aaca);
             box-shadow:
@@ -902,6 +954,14 @@
               0 3px 0 rgba(0,0,0,.38),
               0 0 14px ${theme}66,
               inset 0 2px 5px rgba(255,255,255,.3);
+          }
+
+          #${targetId} .win-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 16px;
           }
 
           #${targetId} .turn-title {
@@ -1280,7 +1340,7 @@
               <h2 class="turn-title">ВАШ ХОД</h2>
 
               <div class="counter">
-                Найдено: <span class="found-count">0</span> / ${totalObjects}
+                Найдено: <span class="found-count">0</span> / <span class="total-count">${getTotalObjects()}</span>
               </div>
 
               <div class="progress">
@@ -1327,7 +1387,11 @@
               <div class="win-box">
                 <h2>${safe(config.winText || "Победа!")}</h2>
                 ${config.feedbackUrl ? `<img src="${safe(config.feedbackUrl)}" alt="">` : ""}
-                ${config.showEndButton ? `<button class="game-btn restart-btn" type="button">${safe(config.endButtonText || "ИГРАТЬ СНОВА")}</button>` : ""}
+
+                <div class="win-buttons">
+                  ${config.showEndButton ? `<button class="game-btn restart-btn" type="button">${safe(config.endButtonText || "ИГРАТЬ СНОВА")}</button>` : ""}
+                  ${(config.showNextButton && config.nextButtonUrl) ? `<button class="game-btn next-btn" type="button">${safe(config.nextButtonText || "ДАЛЬШЕ")}</button>` : ""}
+                </div>
               </div>
             </div>
           </div>
@@ -1338,8 +1402,10 @@
       const playScreen = root.querySelector(".play-screen");
       const startBtn = root.querySelector(".start-btn");
       const restartBtn = root.querySelector(".restart-btn");
+      const nextBtn = root.querySelector(".next-btn");
       const soundBtn = root.querySelector(".sound-btn");
       const foundCount = root.querySelector(".found-count");
+      const totalCount = root.querySelector(".total-count");
       const progressFill = root.querySelector(".progress-fill");
       const winScreen = root.querySelector(".win-screen");
       const foundItemsBox = root.querySelector(".found-items");
@@ -1373,11 +1439,13 @@
 
       function restartGame() {
         found = 0;
-        foundCells.clear();
+        foundCells = new Set();
+        hiddenCells = parseHiddenCells();
 
         root.querySelectorAll(".cell").forEach(function(cell) {
           cell.innerHTML = "";
           cell.classList.remove("active", "vanished", "found");
+          cell.style.pointerEvents = "auto";
         });
 
         root.querySelectorAll(".head-item, .left-item").forEach(function(item) {
@@ -1386,6 +1454,7 @@
 
         resetFoundPanel();
         foundCount.textContent = "0";
+        totalCount.textContent = getTotalObjects();
         progressFill.style.width = "0%";
         winScreen.style.display = "none";
         playScreen.style.display = "grid";
@@ -1406,6 +1475,12 @@
 
       if (restartBtn) {
         restartBtn.addEventListener("click", restartGame);
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener("click", function() {
+          window.open(config.nextButtonUrl, "_top");
+        });
       }
 
       if (soundBtn) {
@@ -1452,9 +1527,9 @@
               addFoundItem();
 
               foundCount.textContent = found;
-              progressFill.style.width = Math.round((found / totalObjects) * 100) + "%";
+              progressFill.style.width = Math.round((found / getTotalObjects()) * 100) + "%";
 
-              if (found >= totalObjects) {
+              if (found >= getTotalObjects()) {
                 setTimeout(function() {
                   playWinSound();
                   winScreen.style.display = "flex";
