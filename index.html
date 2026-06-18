@@ -1379,6 +1379,29 @@
       const winScreen = root.querySelector(".win-screen");
       const foundItemsBox = root.querySelector(".found-items");
 
+      function clearHoverHighlight() {
+        root.querySelectorAll(".cell, .head-item, .left-item").forEach(function(item) {
+          item.classList.remove("active");
+        });
+      }
+
+      function showHoverHighlight(cell) {
+        if (cell.classList.contains("vanished")) return;
+
+        clearHoverHighlight();
+
+        const row = Number(cell.dataset.row);
+        const col = Number(cell.dataset.col);
+
+        cell.classList.add("active");
+
+        const topItem = root.querySelector('.head-item[data-index="' + col + '"]');
+        const leftItem = root.querySelector('.left-item[data-index="' + row + '"]');
+
+        if (topItem) topItem.classList.add("active");
+        if (leftItem) leftItem.classList.add("active");
+      }
+
       function addFoundItem() {
         const empty = foundItemsBox.querySelector(".found-empty");
         if (empty) {
@@ -1417,10 +1440,7 @@
           cell.style.pointerEvents = "auto";
         });
 
-        root.querySelectorAll(".head-item, .left-item").forEach(function(item) {
-          item.classList.remove("active");
-        });
-
+        clearHoverHighlight();
         resetFoundPanel();
         foundCount.textContent = "0";
         totalCount.textContent = getTotalObjects();
@@ -1454,24 +1474,20 @@
       }
 
       root.querySelectorAll(".cell").forEach(function(cell) {
+        cell.addEventListener("mouseenter", function() {
+          showHoverHighlight(cell);
+        });
+
+        cell.addEventListener("mouseleave", function() {
+          clearHoverHighlight();
+        });
+
         cell.addEventListener("click", function() {
           const row = Number(cell.dataset.row);
           const col = Number(cell.dataset.col);
           const key = row + "-" + col;
 
           playClickSound();
-
-          root.querySelectorAll(".cell, .head-item, .left-item").forEach(function(item) {
-            item.classList.remove("active");
-          });
-
-          cell.classList.add("active");
-
-          const topItem = root.querySelector('.head-item[data-index="' + col + '"]');
-          const leftItem = root.querySelector('.left-item[data-index="' + row + '"]');
-
-          if (topItem) topItem.classList.add("active");
-          if (leftItem) leftItem.classList.add("active");
 
           if (hiddenCells.has(key)) {
             if (!foundCells.has(key)) {
@@ -1502,6 +1518,8 @@
           } else {
             vanishEmptyCell(cell);
           }
+
+          clearHoverHighlight();
         });
       });
     }
