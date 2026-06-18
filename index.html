@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Редактор игры-таблицы</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Редактор «Найди и назови»</title>
 
   <style>
     * {
@@ -13,127 +13,133 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "PT Sans", Arial, sans-serif;
+      font-family: Arial, sans-serif;
       color: #ffffff;
       background:
-        radial-gradient(circle at top left, rgba(0, 213, 255, 0.18), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(111, 0, 255, 0.18), transparent 35%),
+        radial-gradient(circle at top left, rgba(0, 217, 255, 0.22), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(137, 74, 255, 0.20), transparent 35%),
         #071426;
     }
 
-    .app {
+    .editor-app {
       display: grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 430px 1fr;
       gap: 22px;
       padding: 22px;
       min-height: 100vh;
     }
 
-    .panel,
-    .preview-wrap {
+    .editor-panel,
+    .preview-panel {
       border: 2px solid #13d8ff;
-      border-radius: 22px;
-      background: rgba(15, 31, 51, 0.92);
+      border-radius: 24px;
+      background: rgba(14, 31, 51, 0.94);
       box-shadow:
-        0 0 22px rgba(19, 216, 255, 0.22),
-        inset 0 0 25px rgba(255, 255, 255, 0.03);
+        0 0 24px rgba(19, 216, 255, 0.25),
+        inset 0 0 25px rgba(255, 255, 255, 0.04);
     }
 
-    .panel {
+    .editor-panel {
       padding: 20px;
-      overflow-y: auto;
       max-height: calc(100vh - 44px);
+      overflow-y: auto;
     }
 
-    .logo-row {
+    .preview-panel {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 44px);
+    }
+
+    .top-title {
       display: flex;
       align-items: center;
       gap: 14px;
       margin-bottom: 22px;
     }
 
-    .logo {
-      width: 70px;
-      height: 70px;
+    .round-logo {
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      background: linear-gradient(145deg, #27efff, #04a8d3);
+      background: linear-gradient(145deg, #34f1ff, #03a9d7);
       box-shadow:
-        inset 0 8px 12px rgba(255, 255, 255, 0.35),
-        inset 0 -10px 20px rgba(0, 0, 0, 0.18),
-        0 0 22px rgba(19, 216, 255, 0.55);
+        inset 0 8px 14px rgba(255,255,255,.35),
+        inset 0 -12px 22px rgba(0,0,0,.22),
+        0 0 24px rgba(19,216,255,.65);
     }
 
     h1 {
       margin: 0;
-      font-size: 24px;
-      line-height: 1.15;
       color: #18dfff;
-      text-shadow: 0 0 12px rgba(24, 223, 255, 0.65);
+      font-size: 25px;
+      line-height: 1.15;
+      text-shadow: 0 0 12px rgba(24, 223, 255, 0.72);
     }
 
     .section {
-      padding: 18px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 17px 0;
+      border-top: 1px solid rgba(255,255,255,.12);
     }
 
     label {
       display: block;
-      font-weight: 800;
-      margin: 0 0 8px;
+      margin-bottom: 8px;
       font-size: 16px;
+      font-weight: 800;
     }
 
     input,
     textarea,
     select {
       width: 100%;
-      border: 1px solid rgba(19, 216, 255, 0.28);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(19, 216, 255, 0.32);
+      border-radius: 13px;
+      background: rgba(255,255,255,.07);
       color: #ffffff;
       padding: 12px 14px;
       font-size: 15px;
       outline: none;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    select option {
+      color: #111111;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
       border-color: #13d8ff;
-      box-shadow: 0 0 14px rgba(19, 216, 255, 0.28);
+      box-shadow: 0 0 15px rgba(19,216,255,.3);
     }
 
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-      font-family: inherit;
-    }
-
-    select option {
-      color: #111;
-    }
-
-    .row {
+    .two {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    .check {
+    .checkbox-line {
       display: flex;
       align-items: center;
       gap: 10px;
       margin: 10px 0;
       padding: 11px 12px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
+      border-radius: 13px;
+      background: rgba(255,255,255,.06);
       font-weight: 800;
     }
 
-    .check input {
-      width: 22px;
-      height: 22px;
+    .checkbox-line input {
+      width: 23px;
+      height: 23px;
       accent-color: #13d8ff;
     }
 
@@ -141,84 +147,100 @@
       margin-top: 7px;
       font-size: 13px;
       line-height: 1.35;
-      color: rgba(255, 255, 255, 0.68);
+      color: rgba(255,255,255,.68);
     }
 
-    .copy-btn {
+    .big-btn {
       width: 100%;
       border: none;
-      border-radius: 15px;
-      padding: 16px 20px;
-      margin-top: 12px;
+      border-radius: 17px;
+      padding: 17px 18px;
       cursor: pointer;
+      color: #03111d;
       font-size: 17px;
       font-weight: 900;
-      color: #03101d;
-      background: linear-gradient(145deg, #28eaff, #04bde8);
+      background: linear-gradient(145deg, #2cecff, #04bce8);
       box-shadow:
-        0 9px 0 #0583a7,
-        0 0 28px rgba(19, 216, 255, 0.45);
-      transition: transform 0.12s, box-shadow 0.12s;
+        0 9px 0 #057fa3,
+        0 0 28px rgba(19,216,255,.45),
+        inset 0 4px 5px rgba(255,255,255,.35);
     }
 
-    .copy-btn:active {
+    .big-btn:active {
       transform: translateY(5px);
       box-shadow:
-        0 4px 0 #0583a7,
-        0 0 18px rgba(19, 216, 255, 0.35);
+        0 4px 0 #057fa3,
+        0 0 16px rgba(19,216,255,.35);
     }
 
-    .preview-wrap {
-      padding: 16px;
-      min-height: calc(100vh - 44px);
-      display: flex;
-      flex-direction: column;
+    .small-btn {
+      width: 100%;
+      border: 2px solid #13d8ff;
+      border-radius: 12px;
+      padding: 11px;
+      cursor: pointer;
+      background: transparent;
+      color: #ffffff;
+      font-weight: 900;
     }
 
-    .tabs {
+    .message {
+      min-height: 24px;
+      margin-top: 12px;
+      color: #91f4ff;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    #manualCopyBlock {
+      display: none;
+      margin-top: 12px;
+    }
+
+    #manualCode {
+      min-height: 180px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .preview-tabs {
       display: flex;
       gap: 12px;
       margin-bottom: 14px;
     }
 
-    .tab {
+    .preview-tab {
       flex: 1;
       border: 2px solid #13d8ff;
+      border-radius: 12px;
+      padding: 13px;
       background: transparent;
       color: #ffffff;
-      border-radius: 10px;
-      padding: 12px;
       font-weight: 900;
       cursor: pointer;
     }
 
-    .tab.active {
-      color: #02121d;
-      background: linear-gradient(145deg, #25e9ff, #05bce8);
-      box-shadow: 0 0 18px rgba(19, 216, 255, 0.35);
+    .preview-tab.active {
+      color: #06131c;
+      background: linear-gradient(145deg, #2cecff, #04bce8);
+      box-shadow: 0 0 18px rgba(19,216,255,.4);
     }
 
     #preview {
       flex: 1;
       min-height: 560px;
-      border-radius: 18px;
       overflow: hidden;
-      background: #000;
-    }
-
-    .message {
-      margin-top: 12px;
-      color: #8df3ff;
-      font-weight: 800;
-      min-height: 22px;
+      border-radius: 20px;
+      background: #000000;
     }
 
     @media (max-width: 1000px) {
-      .app {
+      .editor-app {
         grid-template-columns: 1fr;
       }
 
-      .panel {
+      .editor-panel {
         max-height: none;
       }
     }
@@ -226,21 +248,21 @@
 </head>
 
 <body>
-  <div class="app">
-    <aside class="panel">
-      <div class="logo-row">
-        <div class="logo"></div>
+  <div class="editor-app">
+    <aside class="editor-panel">
+      <div class="top-title">
+        <div class="round-logo"></div>
         <h1>Редактор<br>«Найди и назови»</h1>
       </div>
 
       <div class="section">
         <label>Заголовок игры:</label>
-        <input id="title" value="ЗОВ ОСКОЛКОВ">
+        <input id="gameTitle" value="ЗОВ ОСКОЛКОВ">
 
         <br><br>
 
         <label>Правила игры:</label>
-        <textarea id="rules">Нажимай на клетки.
+        <textarea id="gameRules">Нажимай на клетки.
 Назови картинку сверху и картинку слева.
 Выполни задание и найди все осколки!</textarea>
       </div>
@@ -256,40 +278,40 @@
       <div class="section">
         <label>Шрифт текста:</label>
         <select id="fontFamily">
-          <option value="PT Sans, Arial, sans-serif">PT Sans</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="'PT Sans', Arial, sans-serif">PT Sans</option>
           <option value="Montserrat, Arial, sans-serif">Montserrat</option>
-          <option value="Open Sans, Arial, sans-serif">Open Sans</option>
+          <option value="'Open Sans', Arial, sans-serif">Open Sans</option>
           <option value="Rubik, Arial, sans-serif">Rubik</option>
-          <option value="Lobster, cursive">Lobster</option>
-          <option value="Marck Script, cursive">Marck Script</option>
-          <option value="Cormorant, serif">Cormorant</option>
-          <option value="Noto Sans, Arial, sans-serif">Noto Sans</option>
+          <option value="'Comic Sans MS', cursive">Comic Sans</option>
+          <option value="Georgia, serif">Georgia</option>
         </select>
 
         <br><br>
 
-        <div class="row">
+        <div class="two">
           <div>
             <label>Цвет темы:</label>
             <input id="themeColor" type="color" value="#13d8ff">
           </div>
+
           <div>
             <label>Цвет текста:</label>
             <input id="textColor" type="color" value="#ffffff">
           </div>
         </div>
 
-        <label class="check">
+        <label class="checkbox-line">
           <input id="textNeon" type="checkbox" checked>
           Неон текста
         </label>
 
-        <label class="check">
+        <label class="checkbox-line">
           <input id="frameNeon" type="checkbox" checked>
           Неон рамок и клеток
         </label>
 
-        <label class="check">
+        <label class="checkbox-line">
           <input id="soundButton" type="checkbox" checked>
           Кнопка звука в игре
         </label>
@@ -297,10 +319,10 @@
 
       <div class="section">
         <label>Слова или URL картинок сверху<br>каждый с новой строки:</label>
-        <textarea id="topItems">https://img.genially.com/66f849d0f7b39c0016fdd814/0cd1749e-79d0-48d4-aa25-fc60a81b4c4e.png
-https://img.genially.com/66f849d0f7b39c0016fdd814/52fa97a1-bb1b-4050-bb09-72bb3c6f574a.png
-https://img.genially.com/66f849d0f7b39c0016fdd814/8537f966-2b7c-4f92-a9cb-9e944242a06c.png
-https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49e4f0a7.png</textarea>
+        <textarea id="topItems">руль
+рогатка
+рак
+ракета</textarea>
 
         <br><br>
 
@@ -313,7 +335,7 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
 
       <div class="section">
         <label>URL картинки спрятанного объекта:</label>
-        <input id="objectUrl" value="https://img.genially.com/66f849d0f7b39c0016fdd814/7e3c9f5e-f3e2-47ec-a888-517c0e33977e.png">
+        <input id="objectUrl" placeholder="Можно оставить пустым — будет звёздочка">
 
         <br><br>
 
@@ -345,26 +367,27 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
         <label>Текст кнопки в конце:</label>
         <input id="endButtonText" value="ИГРАТЬ СНОВА">
 
-        <label class="check">
+        <label class="checkbox-line">
           <input id="showEndButton" type="checkbox" checked>
           Показывать кнопку в конце
         </label>
       </div>
 
       <div class="section">
-        <label class="check">
+        <label class="checkbox-line">
           <input id="transparentBg" type="checkbox" checked>
           Полностью прозрачный фон
         </label>
 
-        <div class="row">
+        <div class="two">
           <div>
             <label>Цвет фона:</label>
             <input id="bgColor" type="color" value="#000000">
           </div>
+
           <div>
             <label>&nbsp;</label>
-            <button class="tab" type="button" onclick="resetBg()">Сброс</button>
+            <button class="small-btn" type="button" onclick="resetBackground()">Сброс</button>
           </div>
         </div>
 
@@ -379,43 +402,71 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
         <input id="bgBlur" type="range" min="0" max="20" value="0">
       </div>
 
-      <button class="copy-btn" onclick="copyCode()">СКОПИРОВАТЬ КОД ДЛЯ GENIALLY</button>
+      <button class="big-btn" type="button" onclick="copyGeniallyCode()">СКОПИРОВАТЬ КОД ДЛЯ GENIALLY</button>
       <div class="message" id="message"></div>
+
+      <div id="manualCopyBlock">
+        <label>Код для ручного копирования:</label>
+        <textarea id="manualCode" readonly></textarea>
+        <div class="hint">Если автоматическое копирование не сработало, выдели этот код и скопируй вручную.</div>
+      </div>
     </aside>
 
-    <main class="preview-wrap">
-      <div class="tabs">
-        <button class="tab active" type="button">ПРЕДПРОСМОТР ИГРЫ</button>
-        <button class="tab" type="button" onclick="copyCode()">СКОПИРОВАТЬ КОД</button>
+    <main class="preview-panel">
+      <div class="preview-tabs">
+        <button class="preview-tab active" type="button">ПРЕДПРОСМОТР ИГРЫ</button>
+        <button class="preview-tab" type="button" onclick="copyGeniallyCode()">СКОПИРОВАТЬ КОД</button>
       </div>
+
       <div id="preview"></div>
     </main>
   </div>
 
   <script>
-    const controls = [
-      "title", "rules", "gameMode", "fontFamily", "themeColor", "textColor",
-      "textNeon", "frameNeon", "soundButton", "topItems", "leftItems",
-      "objectUrl", "objectCount", "objectCoords", "winText", "feedbackUrl",
-      "endButtonText", "showEndButton", "transparentBg", "bgColor", "bgUrl", "bgBlur"
+    const fieldIds = [
+      "gameTitle",
+      "gameRules",
+      "gameMode",
+      "fontFamily",
+      "themeColor",
+      "textColor",
+      "textNeon",
+      "frameNeon",
+      "soundButton",
+      "topItems",
+      "leftItems",
+      "objectUrl",
+      "objectCount",
+      "objectCoords",
+      "winText",
+      "feedbackUrl",
+      "endButtonText",
+      "showEndButton",
+      "transparentBg",
+      "bgColor",
+      "bgUrl",
+      "bgBlur"
     ];
 
-    controls.forEach(id => {
-      document.getElementById(id).addEventListener("input", updatePreview);
-      document.getElementById(id).addEventListener("change", updatePreview);
+    fieldIds.forEach(function(id) {
+      const element = document.getElementById(id);
+      element.addEventListener("input", updatePreview);
+      element.addEventListener("change", updatePreview);
     });
 
-    function getLines(value) {
-      return value
+    function linesFromText(value) {
+      return String(value)
         .split("\n")
-        .map(item => item.trim())
+        .map(function(line) {
+          return line.trim();
+        })
         .filter(Boolean);
     }
 
     function getConfig() {
       return {
-        title: document.getElementById("title").value.trim() || "Игра",
-        rules: document.getElementById("rules").value.trim(),
+        gameTitle: document.getElementById("gameTitle").value.trim() || "Игра",
+        gameRules: document.getElementById("gameRules").value.trim(),
         gameMode: document.getElementById("gameMode").value,
         fontFamily: document.getElementById("fontFamily").value,
         themeColor: document.getElementById("themeColor").value,
@@ -423,11 +474,11 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
         textNeon: document.getElementById("textNeon").checked,
         frameNeon: document.getElementById("frameNeon").checked,
         soundButton: document.getElementById("soundButton").checked,
-        topItems: getLines(document.getElementById("topItems").value),
-        leftItems: getLines(document.getElementById("leftItems").value),
+        topItems: linesFromText(document.getElementById("topItems").value),
+        leftItems: linesFromText(document.getElementById("leftItems").value),
         objectUrl: document.getElementById("objectUrl").value.trim(),
         objectCount: Number(document.getElementById("objectCount").value) || 1,
-        objectCoords: getLines(document.getElementById("objectCoords").value),
+        objectCoords: linesFromText(document.getElementById("objectCoords").value),
         winText: document.getElementById("winText").value.trim() || "Победа!",
         feedbackUrl: document.getElementById("feedbackUrl").value.trim(),
         endButtonText: document.getElementById("endButtonText").value.trim() || "ИГРАТЬ СНОВА",
@@ -439,7 +490,7 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
       };
     }
 
-    function resetBg() {
+    function resetBackground() {
       document.getElementById("bgColor").value = "#000000";
       document.getElementById("bgUrl").value = "";
       document.getElementById("bgBlur").value = "0";
@@ -450,36 +501,62 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
       renderGame("preview", getConfig(), true);
     }
 
-    function copyCode() {
+    function createCodeForGenially() {
       const config = getConfig();
       const gameId = "genially-game-" + Math.random().toString(36).slice(2, 9);
 
-      const code =
-`<div id="${gameId}"></div>
+      const code = `<div id="${gameId}" style="width:100%; height:100%; min-height:620px;"></div>
 <script>
 (${renderGame.toString()})("${gameId}", ${JSON.stringify(config)}, false);
 </scr` + `ipt>`;
 
-      navigator.clipboard.writeText(code).then(() => {
-        document.getElementById("message").textContent = "Готово! Код скопирован.";
-      }).catch(() => {
-        document.getElementById("message").textContent = "Не получилось скопировать. Выдели код вручную.";
-        alert(code);
-      });
+      return code;
+    }
+
+    function copyGeniallyCode() {
+      const code = createCodeForGenially();
+      const message = document.getElementById("message");
+      const manualBlock = document.getElementById("manualCopyBlock");
+      const manualCode = document.getElementById("manualCode");
+
+      manualCode.value = code;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(code)
+          .then(function() {
+            message.textContent = "Готово! Код скопирован.";
+            manualBlock.style.display = "none";
+          })
+          .catch(function() {
+            message.textContent = "Браузер не разрешил автокопирование. Код появился ниже — скопируй его вручную.";
+            manualBlock.style.display = "block";
+            manualCode.focus();
+            manualCode.select();
+          });
+      } else {
+        message.textContent = "Код появился ниже — скопируй его вручную.";
+        manualBlock.style.display = "block";
+        manualCode.focus();
+        manualCode.select();
+      }
     }
 
     function renderGame(targetId, config, previewMode) {
       const root = document.getElementById(targetId);
       if (!root) return;
 
-      const isUrl = value => /^https?:\/\//i.test(value);
+      const isUrl = function(value) {
+        return /^https?:\/\//i.test(String(value));
+      };
 
-      const safe = value => String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      const safe = function(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      };
 
       const topItems = Array.isArray(config.topItems) && config.topItems.length ? config.topItems : ["1", "2", "3", "4"];
       const leftItems = Array.isArray(config.leftItems) && config.leftItems.length ? config.leftItems : ["1", "2", "3", "4"];
@@ -487,54 +564,58 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
       const rows = leftItems.length;
       const cols = topItems.length;
 
-      function parseCoords() {
-        const coords = new Set();
+      const theme = config.themeColor || "#13d8ff";
+      const textColor = config.textColor || "#ffffff";
+      const fontFamily = config.fontFamily || "Arial, sans-serif";
+
+      let soundOn = true;
+      let found = 0;
+      const foundCells = new Set();
+
+      function parseHiddenCells() {
+        const result = new Set();
 
         if (Array.isArray(config.objectCoords)) {
-          config.objectCoords.forEach(line => {
-            const parts = String(line).split(",").map(n => Number(n.trim()));
-            const r = parts[0];
-            const c = parts[1];
+          config.objectCoords.forEach(function(line) {
+            const parts = String(line).split(",");
+            const row = Number(parts[0]);
+            const col = Number(parts[1]);
 
-            if (r >= 1 && r <= rows && c >= 1 && c <= cols) {
-              coords.add(`${r - 1}-${c - 1}`);
+            if (row >= 1 && row <= rows && col >= 1 && col <= cols) {
+              result.add((row - 1) + "-" + (col - 1));
             }
           });
         }
 
-        if (coords.size === 0) {
-          const totalCells = rows * cols;
-          const need = Math.min(Number(config.objectCount) || 1, totalCells);
-          const all = [];
+        if (result.size === 0) {
+          const allCells = [];
 
           for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
-              all.push(`${r}-${c}`);
+              allCells.push(r + "-" + c);
             }
           }
 
-          for (let i = all.length - 1; i > 0; i--) {
+          for (let i = allCells.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [all[i], all[j]] = [all[j], all[i]];
+            const temp = allCells[i];
+            allCells[i] = allCells[j];
+            allCells[j] = temp;
           }
 
-          all.slice(0, need).forEach(coord => coords.add(coord));
+          const need = Math.min(Number(config.objectCount) || 1, allCells.length);
+          allCells.slice(0, need).forEach(function(cell) {
+            result.add(cell);
+          });
         }
 
-        return coords;
+        return result;
       }
 
-      const hiddenCoords = parseCoords();
-      const totalObjects = hiddenCoords.size;
-      const foundCoords = new Set();
-      let found = 0;
-      let soundOn = true;
+      const hiddenCells = parseHiddenCells();
+      const totalObjects = hiddenCells.size;
 
-      const theme = config.themeColor || "#13d8ff";
-      const text = config.textColor || "#ffffff";
-      const font = config.fontFamily || "PT Sans, Arial, sans-serif";
-
-      function renderItem(value, className, index) {
+      function makeItem(value, className, index) {
         const content = isUrl(value)
           ? `<img src="${safe(value)}" alt="">`
           : `<span>${safe(value)}</span>`;
@@ -542,7 +623,7 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
         return `<div class="${className}" data-index="${index}">${content}</div>`;
       }
 
-      function beep() {
+      function playClickSound() {
         if (!soundOn) return;
 
         try {
@@ -560,17 +641,17 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
 
           osc.start();
           osc.stop(ctx.currentTime + 0.08);
-        } catch (e) {}
+        } catch (error) {}
       }
 
-      function winSound() {
+      function playWinSound() {
         if (!soundOn) return;
 
         try {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           const ctx = new AudioContext();
 
-          [523, 659, 784].forEach((freq, i) => {
+          [523, 659, 784].forEach(function(freq, index) {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
 
@@ -580,475 +661,517 @@ https://img.genially.com/66f849d0f7b39c0016fdd814/4baa2509-eda6-4aa2-af25-8fdb49
             osc.connect(gain);
             gain.connect(ctx.destination);
 
-            osc.start(ctx.currentTime + i * 0.12);
-            osc.stop(ctx.currentTime + i * 0.12 + 0.12);
+            osc.start(ctx.currentTime + index * 0.12);
+            osc.stop(ctx.currentTime + index * 0.12 + 0.12);
           });
-        } catch (e) {}
+        } catch (error) {}
       }
 
-      function build() {
-        const bgStyle = config.transparentBg
-          ? "background: transparent;"
-          : config.bgUrl
-            ? `background-image: url('${safe(config.bgUrl)}'); background-size: cover; background-position: center;`
-            : `background: ${safe(config.bgColor || "#000000")};`;
+      const bgStyle = config.transparentBg
+        ? "background: transparent;"
+        : config.bgUrl
+          ? `background-image: url('${safe(config.bgUrl)}'); background-size: cover; background-position: center;`
+          : `background: ${safe(config.bgColor || "#000000")};`;
 
-        const textShadow = config.textNeon
-          ? `text-shadow: 0 0 10px ${theme}, 0 0 22px ${theme};`
-          : "";
+      const textNeon = config.textNeon
+        ? `text-shadow: 0 0 10px ${theme}, 0 0 22px ${theme};`
+        : "";
 
-        const frameShadow = config.frameNeon
-          ? `box-shadow: 0 0 16px ${theme}66, inset 0 0 16px rgba(255,255,255,.04);`
-          : "";
+      const frameNeon = config.frameNeon
+        ? `box-shadow: 0 0 18px ${theme}77, inset 0 0 18px rgba(255,255,255,.04);`
+        : "";
 
-        root.innerHTML = `
-          <style>
-            #${targetId} {
-              width: 100%;
-              height: 100%;
-              min-height: 560px;
-              overflow: hidden;
-              font-family: ${font};
-              color: ${text};
+      root.innerHTML = `
+        <style>
+          #${targetId} {
+            width: 100%;
+            height: 100%;
+            min-height: 560px;
+            overflow: hidden;
+            color: ${textColor};
+            font-family: ${fontFamily};
+          }
+
+          #${targetId} * {
+            box-sizing: border-box;
+          }
+
+          #${targetId} .game-main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            ${bgStyle}
+          }
+
+          #${targetId} .blur-layer {
+            position: absolute;
+            inset: 0;
+            backdrop-filter: blur(${Number(config.bgBlur) || 0}px);
+            pointer-events: none;
+          }
+
+          #${targetId} .game-card {
+            position: relative;
+            width: min(960px, 100%);
+            min-height: 500px;
+            border: 2px solid ${theme};
+            border-radius: 28px;
+            padding: 24px;
+            background: rgba(0,0,0,.78);
+            ${frameNeon}
+          }
+
+          #${targetId} .start-screen,
+          #${targetId} .play-screen {
+            position: relative;
+            z-index: 2;
+          }
+
+          #${targetId} .play-screen {
+            display: none;
+          }
+
+          #${targetId} .main-title {
+            margin: 0 0 14px;
+            text-align: center;
+            color: ${theme};
+            font-size: clamp(30px, 4vw, 52px);
+            font-weight: 900;
+            letter-spacing: .03em;
+            ${textNeon}
+          }
+
+          #${targetId} .rules {
+            max-width: 720px;
+            margin: 0 auto 24px;
+            font-size: clamp(18px, 2vw, 25px);
+            line-height: 1.45;
+            white-space: pre-line;
+          }
+
+          #${targetId} .rules div {
+            margin: 8px 0;
+          }
+
+          #${targetId} .game-btn {
+            display: block;
+            margin: 28px auto 0;
+            border: none;
+            border-radius: 17px;
+            padding: 15px 44px;
+            cursor: pointer;
+            color: #03111d;
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(145deg, ${theme}, #02aaca);
+            box-shadow:
+              0 9px 0 rgba(0,0,0,.38),
+              0 0 24px ${theme}88,
+              inset 0 4px 5px rgba(255,255,255,.38);
+          }
+
+          #${targetId} .game-btn:active {
+            transform: translateY(5px);
+            box-shadow:
+              0 4px 0 rgba(0,0,0,.38),
+              0 0 14px ${theme}66,
+              inset 0 2px 5px rgba(255,255,255,.3);
+          }
+
+          #${targetId} .turn-title {
+            margin: 0;
+            text-align: center;
+            color: ${theme};
+            font-size: clamp(26px, 3vw, 42px);
+            font-weight: 900;
+            ${textNeon}
+          }
+
+          #${targetId} .counter {
+            margin: 10px 0 14px;
+            text-align: center;
+            font-size: clamp(21px, 2.5vw, 32px);
+            font-weight: 900;
+          }
+
+          #${targetId} .progress {
+            width: min(540px, 82%);
+            height: 22px;
+            margin: 0 auto 24px;
+            border: 2px solid ${theme};
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            overflow: hidden;
+            ${frameNeon}
+          }
+
+          #${targetId} .progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, ${theme}, #ffffff);
+            box-shadow: 0 0 18px ${theme};
+            transition: width .25s;
+          }
+
+          #${targetId} .team-box {
+            display: ${config.gameMode === "team" ? "flex" : "none"};
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+          }
+
+          #${targetId} .team-box input {
+            width: 190px;
+            border: 2px solid ${theme};
+            border-radius: 13px;
+            background: rgba(255,255,255,.08);
+            color: ${textColor};
+            padding: 10px 12px;
+            font-size: 16px;
+            outline: none;
+          }
+
+          #${targetId} .board {
+            display: grid;
+            grid-template-columns: minmax(70px, 112px) repeat(${cols}, minmax(60px, 92px));
+            grid-template-rows: minmax(70px, 100px) repeat(${rows}, minmax(60px, 92px));
+            gap: 10px;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 100%;
+            margin: 0 auto;
+          }
+
+          #${targetId} .corner {
+            border-radius: 18px;
+          }
+
+          #${targetId} .head-item,
+          #${targetId} .left-item,
+          #${targetId} .cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.16);
+            padding: 8px;
+            background:
+              radial-gradient(circle at top left, rgba(255,255,255,.18), transparent 38%),
+              linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.025)),
+              rgba(255,255,255,.07);
+            box-shadow:
+              0 9px 0 rgba(0,0,0,.38),
+              inset 0 3px 5px rgba(255,255,255,.2),
+              inset 0 -8px 14px rgba(0,0,0,.32);
+            transition: transform .12s, box-shadow .12s, background .12s, border-color .12s;
+          }
+
+          #${targetId} .cell {
+            cursor: pointer;
+          }
+
+          #${targetId} .cell:hover {
+            transform: translateY(-2px);
+          }
+
+          #${targetId} .cell:active {
+            transform: translateY(5px);
+            box-shadow:
+              0 4px 0 rgba(0,0,0,.38),
+              inset 0 2px 8px rgba(0,0,0,.38);
+          }
+
+          #${targetId} .head-item.active,
+          #${targetId} .left-item.active,
+          #${targetId} .cell.active {
+            border-color: ${theme};
+            background:
+              radial-gradient(circle at top, rgba(255,255,255,.36), transparent 35%),
+              linear-gradient(145deg, ${theme}, #05a9cc);
+            color: #04131d;
+            box-shadow:
+              0 9px 0 rgba(0,0,0,.38),
+              0 0 25px ${theme}aa,
+              inset 0 4px 7px rgba(255,255,255,.42);
+          }
+
+          #${targetId} .head-item img,
+          #${targetId} .left-item img,
+          #${targetId} .cell img {
+            max-width: 88%;
+            max-height: 88%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 5px rgba(0,0,0,.35));
+          }
+
+          #${targetId} .head-item span,
+          #${targetId} .left-item span {
+            text-align: center;
+            line-height: 1.1;
+            font-size: clamp(14px, 1.8vw, 22px);
+            font-weight: 900;
+          }
+
+          #${targetId} .object {
+            animation: popObject .28s ease-out both;
+          }
+
+          @keyframes popObject {
+            0% {
+              opacity: 0;
+              transform: scale(.2) rotate(-12deg);
             }
 
-            #${targetId} .gt-game {
-              position: relative;
-              width: 100%;
-              min-height: 560px;
-              height: 100%;
-              padding: 26px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              ${bgStyle}
+            80% {
+              opacity: 1;
+              transform: scale(1.15) rotate(4deg);
             }
 
-            #${targetId} .gt-bg-blur {
-              position: absolute;
-              inset: 0;
-              backdrop-filter: blur(${Number(config.bgBlur) || 0}px);
-              pointer-events: none;
+            100% {
+              opacity: 1;
+              transform: scale(1) rotate(0);
+            }
+          }
+
+          #${targetId} .sound-btn {
+            display: ${config.soundButton ? "flex" : "none"};
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            width: 46px;
+            height: 46px;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,.45);
+            border-radius: 50%;
+            background: rgba(255,255,255,.08);
+            color: ${textColor};
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 5;
+          }
+
+          #${targetId} .win-screen {
+            display: none;
+            position: absolute;
+            z-index: 10;
+            inset: 0;
+            align-items: center;
+            justify-content: center;
+            border-radius: 26px;
+            padding: 28px;
+            text-align: center;
+            background: rgba(0,0,0,.82);
+            backdrop-filter: blur(6px);
+          }
+
+          #${targetId} .win-box {
+            max-width: 650px;
+          }
+
+          #${targetId} .win-box h2 {
+            margin: 0 0 16px;
+            color: ${theme};
+            font-size: clamp(32px, 5vw, 62px);
+            ${textNeon}
+          }
+
+          #${targetId} .win-box img {
+            display: block;
+            max-width: 230px;
+            max-height: 230px;
+            object-fit: contain;
+            margin: 10px auto;
+          }
+
+          @media (max-width: 760px) {
+            #${targetId} .game-main {
+              padding: 12px;
             }
 
-            #${targetId} .gt-card {
-              position: relative;
-              z-index: 2;
-              width: min(940px, 100%);
-              min-height: 500px;
-              border-radius: 26px;
-              padding: 24px;
-              background: rgba(0, 0, 0, 0.78);
-              border: 2px solid ${theme};
-              ${frameShadow}
+            #${targetId} .game-card {
+              padding: 14px;
             }
 
-            #${targetId} .gt-title {
-              margin: 0 0 12px;
-              text-align: center;
-              color: ${theme};
-              font-size: clamp(28px, 4vw, 48px);
-              font-weight: 900;
-              letter-spacing: .03em;
-              ${textShadow}
+            #${targetId} .board {
+              gap: 6px;
+              grid-template-columns: minmax(52px, 70px) repeat(${cols}, minmax(42px, 1fr));
+              grid-template-rows: minmax(52px, 70px) repeat(${rows}, minmax(42px, 1fr));
             }
 
-            #${targetId} .gt-rules {
-              max-width: 680px;
-              margin: 0 auto 22px;
-              font-size: clamp(18px, 2vw, 25px);
-              line-height: 1.4;
-              white-space: pre-line;
-            }
-
-            #${targetId} .gt-rules div {
-              margin: 8px 0;
-            }
-
-            #${targetId} .gt-start-btn,
-            #${targetId} .gt-end-btn {
-              display: block;
-              margin: 28px auto 0;
-              border: none;
-              border-radius: 16px;
-              padding: 15px 42px;
-              cursor: pointer;
-              color: #03101d;
-              font-size: 24px;
-              font-weight: 900;
-              background: linear-gradient(145deg, ${theme}, #02aaca);
-              box-shadow:
-                0 9px 0 rgba(0,0,0,.35),
-                0 0 22px ${theme}88,
-                inset 0 3px 5px rgba(255,255,255,.45);
-            }
-
-            #${targetId} .gt-start-btn:active,
-            #${targetId} .gt-end-btn:active {
-              transform: translateY(5px);
-              box-shadow:
-                0 4px 0 rgba(0,0,0,.35),
-                0 0 14px ${theme}66,
-                inset 0 2px 5px rgba(255,255,255,.35);
-            }
-
-            #${targetId} .gt-game-screen {
-              display: none;
-            }
-
-            #${targetId} .gt-top-title {
-              margin: 0;
-              text-align: center;
-              color: ${theme};
-              font-size: clamp(24px, 3vw, 42px);
-              font-weight: 900;
-              ${textShadow}
-            }
-
-            #${targetId} .gt-counter {
-              text-align: center;
-              margin: 10px 0 14px;
-              font-size: clamp(20px, 2.5vw, 32px);
-              font-weight: 900;
-            }
-
-            #${targetId} .gt-progress {
-              width: min(520px, 80%);
-              height: 22px;
-              margin: 0 auto 24px;
-              border-radius: 99px;
-              border: 2px solid ${theme};
-              background: rgba(255,255,255,.08);
-              overflow: hidden;
-              ${frameShadow}
-            }
-
-            #${targetId} .gt-progress-fill {
-              width: 0%;
-              height: 100%;
-              border-radius: 99px;
-              background: linear-gradient(90deg, ${theme}, #ffffff);
-              box-shadow: 0 0 18px ${theme};
-              transition: width .25s;
-            }
-
-            #${targetId} .gt-team-box {
-              display: ${config.gameMode === "team" ? "flex" : "none"};
-              gap: 10px;
-              justify-content: center;
-              margin: 0 auto 18px;
-              flex-wrap: wrap;
-            }
-
-            #${targetId} .gt-team-box input {
-              width: 190px;
+            #${targetId} .head-item,
+            #${targetId} .left-item,
+            #${targetId} .cell {
               border-radius: 12px;
-              border: 2px solid ${theme};
-              background: rgba(255,255,255,.08);
-              color: ${text};
-              padding: 10px 12px;
-              font-size: 16px;
-              outline: none;
+              padding: 4px;
             }
+          }
+        </style>
 
-            #${targetId} .gt-board-wrap {
-              display: grid;
-              grid-template-columns: minmax(70px, 110px) repeat(${cols}, minmax(58px, 90px));
-              grid-template-rows: minmax(70px, 100px) repeat(${rows}, minmax(58px, 90px));
-              gap: 9px;
-              justify-content: center;
-              align-items: stretch;
-              margin: 0 auto;
-              max-width: 100%;
-            }
+        <div class="game-main">
+          <div class="blur-layer"></div>
 
-            #${targetId} .gt-corner {
-              border-radius: 18px;
-            }
+          <div class="game-card">
+            <div class="start-screen">
+              <h1 class="main-title">${safe(config.gameTitle || "Игра")}</h1>
 
-            #${targetId} .gt-head,
-            #${targetId} .gt-left,
-            #${targetId} .gt-cell {
-              position: relative;
-              border-radius: 16px;
-              border: 1px solid rgba(255,255,255,.16);
-              background:
-                linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.02)),
-                rgba(255,255,255,.07);
-              box-shadow:
-                0 8px 0 rgba(0,0,0,.35),
-                inset 0 2px 4px rgba(255,255,255,.18),
-                inset 0 -6px 12px rgba(0,0,0,.28);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 8px;
-              overflow: hidden;
-              transition: transform .12s, box-shadow .12s, background .12s, border-color .12s;
-            }
-
-            #${targetId} .gt-cell {
-              cursor: pointer;
-            }
-
-            #${targetId} .gt-cell:hover {
-              transform: translateY(-2px);
-            }
-
-            #${targetId} .gt-cell:active {
-              transform: translateY(5px);
-              box-shadow:
-                0 3px 0 rgba(0,0,0,.35),
-                inset 0 2px 7px rgba(0,0,0,.35);
-            }
-
-            #${targetId} .gt-head.active,
-            #${targetId} .gt-left.active,
-            #${targetId} .gt-cell.active {
-              border-color: ${theme};
-              background:
-                radial-gradient(circle at top, rgba(255,255,255,.34), transparent 35%),
-                linear-gradient(145deg, ${theme}, #069fc0);
-              color: #06131c;
-              box-shadow:
-                0 8px 0 rgba(0,0,0,.35),
-                0 0 24px ${theme}aa,
-                inset 0 3px 6px rgba(255,255,255,.42);
-            }
-
-            #${targetId} .gt-head img,
-            #${targetId} .gt-left img,
-            #${targetId} .gt-cell img {
-              max-width: 88%;
-              max-height: 88%;
-              object-fit: contain;
-              filter: drop-shadow(0 4px 5px rgba(0,0,0,.35));
-            }
-
-            #${targetId} .gt-head span,
-            #${targetId} .gt-left span {
-              font-weight: 900;
-              font-size: clamp(14px, 1.8vw, 22px);
-              text-align: center;
-              line-height: 1.1;
-            }
-
-            #${targetId} .gt-object {
-              animation: gtPop .26s ease-out both;
-            }
-
-            @keyframes gtPop {
-              0% { transform: scale(.25) rotate(-12deg); opacity: 0; }
-              80% { transform: scale(1.14) rotate(4deg); opacity: 1; }
-              100% { transform: scale(1) rotate(0); opacity: 1; }
-            }
-
-            #${targetId} .gt-sound {
-              display: ${config.soundButton ? "flex" : "none"};
-              position: absolute;
-              right: 18px;
-              bottom: 18px;
-              width: 46px;
-              height: 46px;
-              border-radius: 50%;
-              border: 2px solid rgba(255,255,255,.45);
-              background: rgba(255,255,255,.08);
-              color: ${text};
-              font-size: 24px;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-            }
-
-            #${targetId} .gt-win {
-              display: none;
-              position: absolute;
-              z-index: 10;
-              inset: 0;
-              align-items: center;
-              justify-content: center;
-              background: rgba(0,0,0,.78);
-              backdrop-filter: blur(6px);
-              border-radius: 24px;
-              text-align: center;
-              padding: 28px;
-            }
-
-            #${targetId} .gt-win-box {
-              max-width: 620px;
-            }
-
-            #${targetId} .gt-win h2 {
-              margin: 0 0 16px;
-              color: ${theme};
-              font-size: clamp(32px, 5vw, 62px);
-              ${textShadow}
-            }
-
-            #${targetId} .gt-win img {
-              max-width: 220px;
-              max-height: 220px;
-              object-fit: contain;
-              margin: 10px auto;
-              display: block;
-            }
-
-            @media (max-width: 760px) {
-              #${targetId} .gt-card {
-                padding: 14px;
-              }
-
-              #${targetId} .gt-board-wrap {
-                gap: 6px;
-                grid-template-columns: minmax(52px, 70px) repeat(${cols}, minmax(42px, 1fr));
-                grid-template-rows: minmax(52px, 70px) repeat(${rows}, minmax(42px, 1fr));
-              }
-
-              #${targetId} .gt-head,
-              #${targetId} .gt-left,
-              #${targetId} .gt-cell {
-                border-radius: 11px;
-                padding: 4px;
-              }
-            }
-          </style>
-
-          <div class="gt-game">
-            <div class="gt-bg-blur"></div>
-
-            <div class="gt-card">
-              <div class="gt-start-screen">
-                <h1 class="gt-title">${safe(config.title || "Игра")}</h1>
-                <div class="gt-rules">
-                  ${String(config.rules || "").split("\\n").map(line => `<div>◆ ${safe(line)}</div>`).join("")}
-                </div>
-                <button class="gt-start-btn" type="button">ИГРАТЬ</button>
+              <div class="rules">
+                ${String(config.gameRules || "").split("\\n").map(function(line) {
+                  return `<div>◆ ${safe(line)}</div>`;
+                }).join("")}
               </div>
 
-              <div class="gt-game-screen">
-                <h2 class="gt-top-title">ВАШ ХОД</h2>
-                <div class="gt-counter">Найдено: <span class="gt-found">0</span> / ${totalObjects}</div>
-                <div class="gt-progress"><div class="gt-progress-fill"></div></div>
+              <button class="game-btn start-btn" type="button">ИГРАТЬ</button>
+            </div>
 
-                <div class="gt-team-box">
-                  <input placeholder="Участник 1">
-                  <input placeholder="Участник 2">
-                </div>
+            <div class="play-screen">
+              <h2 class="turn-title">ВАШ ХОД</h2>
 
-                <div class="gt-board-wrap">
-                  <div class="gt-corner"></div>
-                  ${topItems.map((item, i) => renderItem(item, "gt-head", i)).join("")}
-                  ${leftItems.map((left, r) => `
-                    ${renderItem(left, "gt-left", r)}
-                    ${topItems.map((_, c) => `<button class="gt-cell" type="button" data-r="${r}" data-c="${c}"></button>`).join("")}
-                  `).join("")}
-                </div>
+              <div class="counter">
+                Найдено: <span class="found-count">0</span> / ${totalObjects}
               </div>
 
-              <button class="gt-sound" type="button" title="Звук">🔊</button>
+              <div class="progress">
+                <div class="progress-fill"></div>
+              </div>
 
-              <div class="gt-win">
-                <div class="gt-win-box">
-                  <h2>${safe(config.winText || "Победа!")}</h2>
-                  ${config.feedbackUrl ? `<img src="${safe(config.feedbackUrl)}" alt="">` : ""}
-                  ${config.showEndButton ? `<button class="gt-end-btn" type="button">${safe(config.endButtonText || "ИГРАТЬ СНОВА")}</button>` : ""}
-                </div>
+              <div class="team-box">
+                <input placeholder="Участник 1">
+                <input placeholder="Участник 2">
+              </div>
+
+              <div class="board">
+                <div class="corner"></div>
+
+                ${topItems.map(function(item, index) {
+                  return makeItem(item, "head-item", index);
+                }).join("")}
+
+                ${leftItems.map(function(leftItem, rowIndex) {
+                  return `
+                    ${makeItem(leftItem, "left-item", rowIndex)}
+                    ${topItems.map(function(_, colIndex) {
+                      return `<button class="cell" type="button" data-row="${rowIndex}" data-col="${colIndex}"></button>`;
+                    }).join("")}
+                  `;
+                }).join("")}
+              </div>
+            </div>
+
+            <button class="sound-btn" type="button">🔊</button>
+
+            <div class="win-screen">
+              <div class="win-box">
+                <h2>${safe(config.winText || "Победа!")}</h2>
+                ${config.feedbackUrl ? `<img src="${safe(config.feedbackUrl)}" alt="">` : ""}
+                ${config.showEndButton ? `<button class="game-btn restart-btn" type="button">${safe(config.endButtonText || "ИГРАТЬ СНОВА")}</button>` : ""}
               </div>
             </div>
           </div>
-        `;
+        </div>
+      `;
 
-        const startBtn = root.querySelector(".gt-start-btn");
-        const startScreen = root.querySelector(".gt-start-screen");
-        const gameScreen = root.querySelector(".gt-game-screen");
-        const soundBtn = root.querySelector(".gt-sound");
-        const win = root.querySelector(".gt-win");
-        const endBtn = root.querySelector(".gt-end-btn");
-        const foundEl = root.querySelector(".gt-found");
-        const progressFill = root.querySelector(".gt-progress-fill");
+      const startScreen = root.querySelector(".start-screen");
+      const playScreen = root.querySelector(".play-screen");
+      const startBtn = root.querySelector(".start-btn");
+      const restartBtn = root.querySelector(".restart-btn");
+      const soundBtn = root.querySelector(".sound-btn");
+      const foundCount = root.querySelector(".found-count");
+      const progressFill = root.querySelector(".progress-fill");
+      const winScreen = root.querySelector(".win-screen");
 
-        function startGame() {
-          startScreen.style.display = "none";
-          gameScreen.style.display = "block";
-        }
+      function startGame() {
+        startScreen.style.display = "none";
+        playScreen.style.display = "block";
+      }
 
-        function restartGame() {
-          found = 0;
-          foundCoords.clear();
+      function restartGame() {
+        found = 0;
+        foundCells.clear();
 
-          root.querySelectorAll(".gt-cell").forEach(cell => {
-            cell.innerHTML = "";
-            cell.classList.remove("active");
-          });
+        root.querySelectorAll(".cell").forEach(function(cell) {
+          cell.innerHTML = "";
+          cell.classList.remove("active");
+        });
 
-          root.querySelectorAll(".gt-head, .gt-left").forEach(el => {
-            el.classList.remove("active");
-          });
+        root.querySelectorAll(".head-item, .left-item").forEach(function(item) {
+          item.classList.remove("active");
+        });
 
-          foundEl.textContent = "0";
-          progressFill.style.width = "0%";
-          win.style.display = "none";
-          gameScreen.style.display = "block";
-        }
+        foundCount.textContent = "0";
+        progressFill.style.width = "0%";
+        winScreen.style.display = "none";
+        playScreen.style.display = "block";
+      }
 
-        startBtn.addEventListener("click", startGame);
+      startBtn.addEventListener("click", startGame);
 
-        if (previewMode) {
-          startGame();
-        }
+      if (previewMode) {
+        startGame();
+      }
 
-        if (soundBtn) {
-          soundBtn.addEventListener("click", () => {
-            soundOn = !soundOn;
-            soundBtn.textContent = soundOn ? "🔊" : "🔇";
-          });
-        }
+      if (restartBtn) {
+        restartBtn.addEventListener("click", restartGame);
+      }
 
-        if (endBtn) {
-          endBtn.addEventListener("click", restartGame);
-        }
-
-        root.querySelectorAll(".gt-cell").forEach(cell => {
-          cell.addEventListener("click", () => {
-            const r = Number(cell.dataset.r);
-            const c = Number(cell.dataset.c);
-            const key = `${r}-${c}`;
-
-            beep();
-
-            root.querySelectorAll(".gt-cell, .gt-head, .gt-left").forEach(el => {
-              el.classList.remove("active");
-            });
-
-            cell.classList.add("active");
-            root.querySelector(`.gt-head[data-index="${c}"]`)?.classList.add("active");
-            root.querySelector(`.gt-left[data-index="${r}"]`)?.classList.add("active");
-
-            if (hiddenCoords.has(key) && !foundCoords.has(key)) {
-              foundCoords.add(key);
-              found += 1;
-
-              if (config.objectUrl) {
-                cell.innerHTML = `<img class="gt-object" src="${safe(config.objectUrl)}" alt="">`;
-              } else {
-                cell.innerHTML = `<span class="gt-object" style="font-size:34px;">★</span>`;
-              }
-
-              foundEl.textContent = found;
-              progressFill.style.width = `${Math.round((found / totalObjects) * 100)}%`;
-
-              if (found >= totalObjects) {
-                setTimeout(() => {
-                  winSound();
-                  win.style.display = "flex";
-                }, 450);
-              }
-            }
-          });
+      if (soundBtn) {
+        soundBtn.addEventListener("click", function() {
+          soundOn = !soundOn;
+          soundBtn.textContent = soundOn ? "🔊" : "🔇";
         });
       }
 
-      build();
+      root.querySelectorAll(".cell").forEach(function(cell) {
+        cell.addEventListener("click", function() {
+          const row = Number(cell.dataset.row);
+          const col = Number(cell.dataset.col);
+          const key = row + "-" + col;
+
+          playClickSound();
+
+          root.querySelectorAll(".cell, .head-item, .left-item").forEach(function(item) {
+            item.classList.remove("active");
+          });
+
+          cell.classList.add("active");
+
+          const topItem = root.querySelector('.head-item[data-index="' + col + '"]');
+          const leftItem = root.querySelector('.left-item[data-index="' + row + '"]');
+
+          if (topItem) topItem.classList.add("active");
+          if (leftItem) leftItem.classList.add("active");
+
+          if (hiddenCells.has(key) && !foundCells.has(key)) {
+            foundCells.add(key);
+            found++;
+
+            if (config.objectUrl) {
+              cell.innerHTML = `<img class="object" src="${safe(config.objectUrl)}" alt="">`;
+            } else {
+              cell.innerHTML = `<span class="object" style="font-size:36px;">★</span>`;
+            }
+
+            foundCount.textContent = found;
+            progressFill.style.width = Math.round((found / totalObjects) * 100) + "%";
+
+            if (found >= totalObjects) {
+              setTimeout(function() {
+                playWinSound();
+                winScreen.style.display = "flex";
+              }, 450);
+            }
+          }
+        });
+      });
     }
 
     updatePreview();
