@@ -927,14 +927,6 @@
               inset 0 2px 5px rgba(255,255,255,.3);
           }
 
-          #${targetId} .win-buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 16px;
-          }
-
           #${targetId} .turn-title {
             margin: 0;
             text-align: center;
@@ -1504,7 +1496,7 @@
                 setTimeout(function() {
                   playWinSound();
                   winScreen.style.display = "flex";
-                }, 450);
+                }, 5000);
               }
             }
           } else {
