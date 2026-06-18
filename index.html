@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Редактор «Найди и назови»</title>
 
   <style>
@@ -10,14 +10,18 @@
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      min-height: 100vh;
+      min-height: 100%;
       font-family: Arial, sans-serif;
+    }
+
+    body {
       color: #ffffff;
       background:
-        radial-gradient(circle at top left, rgba(0, 217, 255, 0.22), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(137, 74, 255, 0.20), transparent 35%),
+        radial-gradient(circle at top left, rgba(0, 217, 255, 0.24), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(137, 74, 255, 0.22), transparent 35%),
         #071426;
     }
 
@@ -68,6 +72,7 @@
         inset 0 8px 14px rgba(255,255,255,.35),
         inset 0 -12px 22px rgba(0,0,0,.22),
         0 0 24px rgba(19,216,255,.65);
+      flex: 0 0 auto;
     }
 
     h1 {
@@ -198,7 +203,7 @@
     }
 
     #manualCode {
-      min-height: 110px;
+      min-height: 120px;
       font-family: Consolas, monospace;
       font-size: 12px;
       line-height: 1.35;
@@ -252,21 +257,27 @@
 
   <script>
     function encodeConfig(config) {
-      return btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+      const json = JSON.stringify(config);
+      const utf8 = encodeURIComponent(json);
+      const base64 = btoa(unescape(utf8));
+      return encodeURIComponent(base64);
     }
 
     function decodeConfig(text) {
-      return JSON.parse(decodeURIComponent(escape(atob(text))));
+      const base64 = decodeURIComponent(text);
+      const json = decodeURIComponent(escape(atob(base64)));
+      return JSON.parse(json);
     }
 
     function getGameParam() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("game");
+      const query = window.location.search;
+      const match = query.match(/[?&]game=([^&]+)/);
+      return match ? match[1] : "";
     }
 
     const defaultConfig = {
       gameTitle: "ЗОВ ОСКОЛКОВ",
-      gameRules: "Нажимай на клетки.\nНазови картинку сверху и картинку слева.\nВыполни задание и найди все осколки!",
+      gameRules: "Нажимай на клетки.\\nНазови картинку сверху и картинку слева.\\nВыполни задание и найди все осколки!",
       gameMode: "single",
       fontFamily: "Arial, sans-serif",
       themeColor: "#13d8ff",
@@ -294,13 +305,13 @@
     if (gameParam) {
       try {
         const config = decodeConfig(gameParam);
-        document.body.style.background = "transparent";
         document.body.style.margin = "0";
+        document.body.style.background = "transparent";
         document.getElementById("app").style.width = "100vw";
         document.getElementById("app").style.height = "100vh";
         renderGame("app", config, false);
       } catch (error) {
-        document.getElementById("app").innerHTML = "<div style='padding:30px;color:white;font-family:Arial;'>Не удалось открыть игру. Проверьте код вставки.</div>";
+        document.getElementById("app").innerHTML = "<div style='padding:30px;color:white;background:#08142a;font-family:Arial;'>Не удалось открыть игру. Проверьте код вставки.</div>";
       }
     } else {
       renderEditor();
@@ -322,7 +333,7 @@
               <br><br>
 
               <label>Правила игры:</label>
-              <textarea id="gameRules">${defaultConfig.gameRules}</textarea>
+              <textarea id="gameRules">${defaultConfig.gameRules.replaceAll("\\n", "\n")}</textarea>
             </div>
 
             <div class="section">
@@ -558,14 +569,12 @@
       const baseUrl = window.location.origin + window.location.pathname;
       const gameUrl = baseUrl + "?game=" + encoded;
 
-      return `<div style="position: relative; width: 100%; padding-top: 56.25%; overflow: hidden;">
-  <iframe
-    src="${gameUrl}"
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; overflow: hidden;"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
-</div>`;
+      return `<iframe
+  src="${gameUrl}"
+  style="width: 100%; height: 100%; border: none; overflow: hidden;"
+  frameborder="0"
+  allowfullscreen>
+</iframe>`;
     }
 
     function copyShortCode() {
@@ -579,7 +588,7 @@
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(code)
           .then(function() {
-            message.textContent = "Готово! Короткий код скопирован.";
+            message.textContent = "Готово! Короткий код игры скопирован.";
             manualBlock.style.display = "none";
           })
           .catch(function() {
